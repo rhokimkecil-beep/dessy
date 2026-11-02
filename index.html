@@ -107,8 +107,8 @@ body::before{will-change:auto;transform:none}
 <div class="lay">
 <aside class="cd side"><h3>Kolom kategori ini</h3><div class="row" style="margin:0"><button class="sm" id="c30">Terisi ≥ 30%</button><button class="sm" id="cAll">Semua</button><button class="sm" id="cNone">Kosongkan</button></div><div class="list" id="cols"></div></aside>
 <div class="cd" style="margin:0"><div><h2 id="ctitle"></h2><p class="mu" id="cdesc" style="margin:0"></p></div>
-<div class="flt"><label>Cari<input type="text" id="q" placeholder="🔎 Nama, SC, WO, ODP, teknisi…"></label><label>Dari tanggal<input type="date" id="d1"></label><label>Sampai tanggal<input type="date" id="d2"></label><label>Periode gaji (26–25)<select id="per" title="Periode gaji 26–25"></select></label><label>Saring tanggal berdasarkan<select id="dmode"><option value="lap">Tanggal di laporan</option><option value="kirim">Tanggal kirim Telegram</option></select></label></div>
-<div class="row" style="margin-top:0"><label class="mu"><input type="checkbox" id="dedup"> Hapus duplikat (ambil yang terbaru)</label><span class="mu" id="info"></span><button class="sm hide" id="more">Tampilkan 500 lagi</button></div>
+<div class="flt"><label>Cari<input type="text" id="q" placeholder="🔎 Nama, SC, WO, ODP, teknisi…"></label><label>Dari tanggal<input type="date" id="d1"></label><label>Sampai tanggal<input type="date" id="d2"></label><label>Periode gaji (26–25)<select id="per" title="Periode gaji 26–25"></select></label></div>
+<div class="row" style="margin-top:0"><label class="mu"><input type="checkbox" id="dedup"> Hapus duplikat (ambil yang terbaru)</label><span class="mu" id="info"></span></div>
 <div class="tw"><table id="tb"></table></div><p class="mu" style="margin:8px 0 0">Klik ✕ di kiri baris untuk menghapus baris itu dari hasil.</p>
 <div class="bar"><b>3 · Download:</b><button class="p" id="exp">⬇ Excel kategori ini</button><button id="expAll">⬇ Semua kategori</button><button id="csv">CSV</button><button id="undel" class="hide">↩ Kembalikan baris dihapus</button></div></div>
 </div>
@@ -133,7 +133,7 @@ body::before{will-change:auto;transform:none}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <script>
 //#PARSE
-const G={'Nama Pelanggan':['NAMA','NAMA PELANGGAN','NAMA PELANGGA'],'Alamat':['ALAMAT','ALAMAT INSTALASI','ADDR','INSTALASI','ALAMAT ISTALASI'],'No Internet':['INTERNET','NO INTERNET','NO INET','INET'],'No Voice':['VOICE','NO VOICE'],'Kontak':['KONTAK','CP','WA PELANGGAN','NO T SEL'],'SC':['SC','SC ORDER','NO SC'],'No WO':['WONUM','WO NUMBER','NO WO'],'Jenis WO':['JENIS WO','JENIS ORDER'],'Teknisi':['TEKNISI','NAMA TEKNISI','TEK','TIM','PIC'],'Mitra':['MITRA','NAMA MITRA'],'Penginput':['PENGINPUT'],'NIK':['NIK'],'Tanggal Laporan':['TGL','TANGGAL'],'Tanggal PS':['TANGGAL PS','PSB TGL'],'Tanggal Evidensi':[],'STO':['STO'],'Service Area':['SERVICE AREA'],'Desa':['DESA','DES','KEL','KELURAHAN DESA'],'Kecamatan':['KECAMATAN','KEC'],'Kabupaten':['KABUPATEN','KABUBUPATEN','KOTA KAB'],'Patokan':['PATOKAN','PATOKAN RUMAH','PATOKAN RUMAH PELANGGAN'],'No BA':['NO BA','BA'],'BA Digital':['BADIG'],'ID Valins':['VALINS','VALINS ID','ID VALINS','ID VALIS'],'Tipe Valins':['TYPE VALINS'],'Waktu Valins':['TIME'],'Tikor Pelanggan':['TIKOR RUMAH','TIKOR PELANGGAN','TIKOR','TIKOR REAL','TIKOR PLG','TIKOR PLGN','TIKOR PELLANGGAN'],'Tikor ODP':['TIKOR ODP','TIKOAR ODP'],'Tikor Tiang':['TIKOR TIANG'],'Nama ODP':['ODP','NAMA ODP','DATEK'],'Summary ODP':['SUMMARY ODP'],'ODP Terdekat (PT3)':['ODP TERDEKAT PT3'],'Port ODP':['PORT','PORT ODP'],'QR ODP':['QR ODP','BARCODE ODP'],'QR DC':['QR DC','BARCODE DC'],'Paket':['PAKET'],'Jenis ONT':['JENIS ONT'],'SN ONT':['SN ONT'],'SN ONT Lama':['SN ONT LAMA','SN LAMA'],'SN STB':['SN STB'],'STB ID':['STB ID'],'MAC':['MAC'],'SN Kartu':['SN KARTU'],'IP OLT':['IP OLT'],'Slot':['SLOT'],'Panel':['PANEL'],'Jenis ODP':['JENIS ODP'],'Redaman':['REDAMAN'],'Panjang DC':['DC','PANJANG DC'],'Preconnected':['PRECONECTED','PANJANG PRECON','PRECON'],'Patchcore':['PATCHCORE'],'Tray':['TREY','TRAY'],'Clamp Hook':['CLAMP HOOK','C HOOK','CLAM HOOK'],'S-Clamp':['S CLAMP'],'Klem Ring':['KLEM RING','KLEM RING 5 LUBANG','CLAM 5 LUBANG'],'OTP':['OTP'],'Prekso':['PREKSO','PRECSO','FRECSO'],'SOC ILS':['SOC ILS'],'SOC Fuji':['SOC FUJI','SOC FUJ'],'SOC Sumit':['SOC SUMIT','SOC SUM'],'SOC':['SOC'],'Tiang 7':['TIANG 7'],'Tiang Galvanis':['TIANG GALVANIS'],'Labor':['LABOR'],'ID Order':['ID'],'AO':['AO'],'Durasi (jam)':['DURASI JAM','DURATION'],'Hasil Survey':['HASIL SURVEY'],'Tanggal Manja':['TANGGAL MANJA'],'Label ODP Full':['LABEL ODP FULL'],'Menunggu/Tidak':['MENUNGGU TIDAK'],'Detail Lain-lain':['DETAIL LAIN LAIN'],'Foto Evidence':['FOTO EVIDENCE'],'Keterangan UNSC/Cancel':['KETERANGAN UNSC CANCEL'],'Email':['EMAIL'],'MPBS':['MPBS'],'SMOA':['SMOA'],'Keterangan':['KETERANGAN','KET','NOTE'],'No Tiket':['NO TIKET','INCIDENT','TIKET'],'Perbaikan':['PERBAIKAN'],'Casset ODP':['CASSET ODP'],'Spliter':['SPLITER'],'SN ONT Baru':['SN BARU','SN B','BARU'],'Material':['MATERIAL','MATRIAL'],'Waktu Lapor':['REPORTED'],'Batas Manja':['EXP 3H MANJA','MANJA'],'Expired':['EXPIRED'],'Tipe Tiket':['TYPE'],'Ringkasan':['SUMMARY'],'Detail':['DETAIL'],'Keluhan':['KELUHAN','KENDALA','GANGGUAN'],'Workzone':['WORKZONE'],'Status HD':[],'Disetujui oleh':[],'Tgl OK':[],'ID Pesan':[],'Pesan Asli':[]};
+const G={'Nama Pelanggan':['NAMA','NAMA PELANGGAN','NAMA PELANGGA'],'Alamat':['ALAMAT','ALAMAT INSTALASI','ADDR','INSTALASI','ALAMAT ISTALASI'],'No Internet':['INTERNET','NO INTERNET','NO INET','INET'],'No Voice':['VOICE','NO VOICE'],'Kontak':['KONTAK','CP','WA PELANGGAN','NO T SEL'],'SC':['SC','SC ORDER','NO SC'],'No WO':['WONUM','WO NUMBER','NO WO'],'Jenis WO':['JENIS WO','JENIS ORDER'],'Teknisi':['TEKNISI','NAMA TEKNISI','TEK','TIM','PIC'],'Mitra':['MITRA','NAMA MITRA'],'Penginput':['PENGINPUT'],'NIK':['NIK'],'Tanggal Laporan':['TGL','TANGGAL'],'Tanggal PS':['TANGGAL PS','PSB TGL'],'STO':['STO'],'Service Area':['SERVICE AREA'],'Desa':['DESA','DES','KEL','KELURAHAN DESA'],'Kecamatan':['KECAMATAN','KEC'],'Kabupaten':['KABUPATEN','KABUBUPATEN','KOTA KAB'],'Patokan':['PATOKAN','PATOKAN RUMAH','PATOKAN RUMAH PELANGGAN'],'No BA':['NO BA','BA'],'BA Digital':['BADIG'],'ID Valins':['VALINS','VALINS ID','ID VALINS','ID VALIS'],'Tipe Valins':['TYPE VALINS'],'Waktu Valins':['TIME'],'Tikor Pelanggan':['TIKOR RUMAH','TIKOR PELANGGAN','TIKOR','TIKOR REAL','TIKOR PLG','TIKOR PLGN','TIKOR PELLANGGAN'],'Tikor ODP':['TIKOR ODP','TIKOAR ODP'],'Tikor Tiang':['TIKOR TIANG'],'Nama ODP':['ODP','NAMA ODP','DATEK'],'Summary ODP':['SUMMARY ODP'],'ODP Terdekat (PT3)':['ODP TERDEKAT PT3'],'Port ODP':['PORT','PORT ODP'],'QR ODP':['QR ODP','BARCODE ODP'],'QR DC':['QR DC','BARCODE DC'],'Paket':['PAKET'],'Jenis ONT':['JENIS ONT'],'SN ONT':['SN ONT'],'SN ONT Lama':['SN ONT LAMA','SN LAMA'],'SN STB':['SN STB'],'STB ID':['STB ID'],'MAC':['MAC'],'SN Kartu':['SN KARTU'],'IP OLT':['IP OLT'],'Slot':['SLOT'],'Panel':['PANEL'],'Jenis ODP':['JENIS ODP'],'Redaman':['REDAMAN'],'Panjang DC':['DC','PANJANG DC'],'Preconnected':['PRECONECTED','PANJANG PRECON','PRECON'],'Patchcore':['PATCHCORE'],'Tray':['TREY','TRAY'],'Clamp Hook':['CLAMP HOOK','C HOOK','CLAM HOOK'],'S-Clamp':['S CLAMP'],'Klem Ring':['KLEM RING','KLEM RING 5 LUBANG','CLAM 5 LUBANG'],'OTP':['OTP'],'Prekso':['PREKSO','PRECSO','FRECSO'],'SOC ILS':['SOC ILS'],'SOC Fuji':['SOC FUJI','SOC FUJ'],'SOC Sumit':['SOC SUMIT','SOC SUM'],'SOC':['SOC'],'Tiang 7':['TIANG 7'],'Tiang Galvanis':['TIANG GALVANIS'],'Labor':['LABOR'],'ID Order':['ID'],'AO':['AO'],'Durasi (jam)':['DURASI JAM','DURATION'],'Hasil Survey':['HASIL SURVEY'],'Tanggal Manja':['TANGGAL MANJA'],'Label ODP Full':['LABEL ODP FULL'],'Menunggu/Tidak':['MENUNGGU TIDAK'],'Detail Lain-lain':['DETAIL LAIN LAIN'],'Foto Evidence':['FOTO EVIDENCE'],'Keterangan UNSC/Cancel':['KETERANGAN UNSC CANCEL'],'Email':['EMAIL'],'MPBS':['MPBS'],'SMOA':['SMOA'],'Keterangan':['KETERANGAN','KET','NOTE'],'No Tiket':['NO TIKET','INCIDENT','TIKET'],'Perbaikan':['PERBAIKAN'],'Casset ODP':['CASSET ODP'],'Spliter':['SPLITER'],'SN ONT Baru':['SN BARU','SN B','BARU'],'Material':['MATERIAL','MATRIAL'],'Waktu Lapor':['REPORTED'],'Batas Manja':['EXP 3H MANJA','MANJA'],'Expired':['EXPIRED'],'Tipe Tiket':['TYPE'],'Ringkasan':['SUMMARY'],'Detail':['DETAIL'],'Keluhan':['KELUHAN','KENDALA','GANGGUAN'],'Workzone':['WORKZONE'],'Status HD':[],'Disetujui oleh':[],'Tgl OK':[],'ID Pesan':[],'Pesan Asli':[]};
 const META=['Format','Tanggal Kirim','Pengirim'],CORE=[...META,'Nama Pelanggan','Alamat','No Internet','SC','No WO','Jenis WO','Teknisi','Mitra','STO','Nama ODP','Port ODP','ID Valins','SN ONT','SN STB','Tikor Pelanggan','Tikor ODP','Panjang DC','Hasil Survey','Keterangan UNSC/Cancel'];
 const MAP={};for(const c in G)for(const k of G[c])MAP[k]=c;
 Object.assign(MAP,{'CUSTNAME':'Nama Pelanggan','A N':'Nama Pelanggan','AN':'Nama Pelanggan','DATEK ODP':'Nama ODP','NO SERVICE':'No Internet','ND':'No Internet','NOMOR INET':'No Internet','SERVICE NO':'No Internet','NIK TEKNISI':'NIK','CP PELANGGAN':'Kontak','NO HP':'Kontak','SN L':'SN ONT Lama','LAMA':'SN ONT Lama'});
@@ -164,17 +164,6 @@ function kind(t,n){const h=t.slice(0,300);
  if(/FORMAT PELAPORAN/i.test(t)||/JENIS WO\s*:/i.test(t))return'Format teknisi (FORMAT PELAPORAN)';
  if(/^\s*dismantle/i.test(t))return'Dismantle';
  if(n>=5)return'Berlabel lainnya';return null}
-const BLN_ID={januari:1,februari:2,maret:3,april:4,mei:5,juni:6,juli:7,agustus:8,september:9,oktober:10,november:11,desember:12,jan:1,feb:2,mar:3,apr:4,jun:6,jul:7,agu:8,ags:8,sep:9,sept:9,okt:10,nov:11,des:12};
-function evDate(f,t,kirim){
- const c=[f['Tanggal PS'],f['Tanggal Laporan']];
- const ln=t.split('\n').find(l=>/^\s*[^A-Za-z0-9]*TANGGAL[_ ]*(PS)?\s*(:|_|\d)/i.test(l)&&!/MANJA/i.test(l));
- if(ln)c.push(ln.replace(/^\s*[^A-Za-z0-9]*TANGGAL[_ ]*(PS)?\s*:?/i,''));
- for(const v of c){if(!v)continue;const s=String(v);let d,m,y,q;
-  if(q=s.match(/(\d{1,2})\s*[-\/.]\s*(\d{1,2})\s*[-\/.]\s*(\d{2,4})/)){d=+q[1];m=+q[2];y=+q[3]}
-  else if(q=s.match(/(\d{1,2})\s*[-\/. ]*\s*([A-Za-z]{3,})\s*[-\/. ]*\s*(\d{2,4})/)){d=+q[1];const w=q[2].toLowerCase();m=BLN_ID[w]||BLN_ID[w.slice(0,3)];y=+q[3]}
-  if(y&&y<100)y+=2000;
-  if(d>=1&&d<=31&&m>=1&&m<=12&&y>=2020&&y<=2040)return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
- return kirim.slice(0,10)}
 function parseAll(data){const out=[],raw=[];let tot=0;const ap={};
  for(const m of data.messages||[]){const r=m.reply_to_message_id;if(r!=null&&m.type==='message'){const t=txt(m).trim();if(t.length<30&&/^(ok|oke|done|siap|close)/i.test(t)&&!ap[r])ap[r]=[m.from||'',(m.date||'').replace('T',' ')]}}
  for(const m of data.messages||[]){if(m.type!=='message')continue;tot++;const t=txt(m);if(!t.trim())continue;
@@ -186,13 +175,12 @@ function parseAll(data){const out=[],raw=[];let tot=0;const ap={};
   if(k.startsWith('Gangguan')){let q;if(!f['No Tiket']&&(q=t.match(/INC\d{6,}/i)))f['No Tiket']=q[0];if(!f['No Internet']&&(q=t.match(/\b13\d{10}\b/)))f['No Internet']=q[0];if(!f.Keterangan&&/LAPSUNG|ringkas/.test(k))f.Keterangan=t.replace(/\s+/g,' ').slice(0,200)}
   const row={id:out.length,Format:k,'Tanggal Kirim':(m.date||'').replace('T',' '),Pengirim:m.from||'',...f};
   if(k.startsWith('Gangguan')&&ap[m.id]){row['Status HD']='OK';row['Disetujui oleh']=ap[m.id][0];row['Tgl OK']=ap[m.id][1]}
-  row['Tanggal Evidensi']=evDate(f,t,row['Tanggal Kirim']);
   row['ID Pesan']=m.id;row['Pesan Asli']=t.slice(0,32000);
   out.push(row)}
  return{rows:out,total:tot,raw}}
 //#/PARSE
 
-const $=s=>document.getElementById(s);let RAW=[],rows=[],total=0,cats=[],fc={},colsBy={},cnt={},colOn={},use=new Set(),del=new Set(),cur0='',SHOW=100;
+const $=s=>document.getElementById(s);let RAW=[],rows=[],total=0,cats=[],fc={},colsBy={},cnt={},colOn={},use=new Set(),del=new Set(),cur0='';
 const COLR=['#2563eb','#0d9488','#c026d3','#ea580c','#65a30d','#dc2626','#7c3aed'];
 const DESC={'Format bot /input':'Laporan dari bot dengan baris NIK, WONUM, SC, TIKOR, dan seterusnya (diawali /input).','Format bot (emoji)':'Laporan "LAPORAN INPUT EVIDENSI" berisi emoji, lengkap dengan redaman dan jenis ODP.','Format teknisi (FORMAT PELAPORAN)':'Laporan manual teknisi dengan judul FORMAT PELAPORAN.','UNSC / Cancel':'Laporan pembatalan (UNSC / Cancel) beserta alasannya.','Survey (ODP penuh / tidak ada ODP)':'Hasil survey saat ODP penuh atau belum ada ODP.','Dismantle':'Laporan pencabutan perangkat.','Berlabel lainnya':'Pesan berlabel lain yang tidak masuk format di atas.','Gangguan: laporan /LAPOR':'Laporan perbaikan gangguan dari teknisi (NO TIKET, PERBAIKAN, SN lama/baru, material, NIK). Kolom Status HD = OK kalau HD sudah membalas "ok" (dianggap closed).','Gangguan: tiket INCIDENT':'Tiket gangguan masuk dari HD (INC..., pelanggan, tipe, ringkasan keluhan, petugas).','Gangguan: LAPSUNG':'Gangguan yang diselesaikan langsung (lapsung) beserta keterangannya.','Gangguan: tiket INC ringkas':'Tiket INC versi ringkas (REG / INC), diambil nomor tiket dan nomor internetnya.'};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -214,17 +202,16 @@ async function load(file){$('msg').textContent='Membaca '+file.name+' …';await
    cnt[k]=c;colsBy[k]=Object.keys(c).sort((a,b)=>ix(a)-ix(b)||c[b]-c[a]);
    colOn[k]=new Set(colsBy[k].filter(x=>META.includes(x)||(c[x]/fc[k]>=.3&&x!=='Pesan Asli'&&x!=='ID Pesan')))});
   use=new Set(cats);del=new Set();cur0=cats[0];
-  const ds=rows.flatMap(r=>[r['Tanggal Kirim'].slice(0,10),r['Tanggal Evidensi']]).filter(Boolean).sort();$('d1').value=ds[0];$('d2').value=ds[ds.length-1];ALL=[ds[0],ds[ds.length-1]];buildPer(ALL[0],ALL[1]);
+  const ds=rows.map(r=>r['Tanggal Kirim'].slice(0,10)).sort();$('d1').value=ds[0];$('d2').value=ds[ds.length-1];ALL=[ds[0],ds[ds.length-1]];buildPer(ALL[0],ALL[1]);
   $('msg').textContent=file.name+' · '+total.toLocaleString('id')+' pesan dibaca';$('app').classList.remove('hide');['hero','steps'].forEach(i=>$(i).classList.add('hide'));$('drop').classList.add('mini');draw()}
  catch(e){$('msg').textContent='Gagal: '+e.message}}
 function catRows(k){let r=rows.filter(x=>x.Format===k&&!del.has(x.id));
  const q=$('q').value.trim().toLowerCase(),a=$('d1').value,b=$('d2').value;
- if(q)r=r.filter(x=>x._s.includes(q));const dk=x=>$('dmode').value==='kirim'?x['Tanggal Kirim'].slice(0,10):(x['Tanggal Evidensi']||x['Tanggal Kirim'].slice(0,10));
- if(a)r=r.filter(x=>dk(x)>=a);if(b)r=r.filter(x=>dk(x)<=b);
+ if(q)r=r.filter(x=>x._s.includes(q));if(a)r=r.filter(x=>x['Tanggal Kirim'].slice(0,10)>=a);if(b)r=r.filter(x=>x['Tanggal Kirim'].slice(0,10)<=b);
  if($('dedup').checked){const last={},K=x=>x['No WO']||x.SC||x['No Internet']||'';r.forEach((x,i)=>{const k=K(x);if(k)last[k]=i});r=r.filter((x,i)=>!K(x)||last[K(x)]===i)}
  return r}
 function drawF(){$('fmts').innerHTML=cats.map(k=>`<label class="${use.has(k)?'on':''}"><input type="checkbox" data-f="${esc(k)}" ${use.has(k)?'checked':''}>${esc(k)}<small>${fc[k]}</small></label>`).join('')}
-function draw(){SHOW=100;drawF();if(!use.has(cur0))cur0=cats.find(k=>use.has(k))||'';
+function draw(){drawF();if(!use.has(cur0))cur0=cats.find(k=>use.has(k))||'';
  if(!cur0){$('cats').innerHTML='';$('ctitle').textContent='Belum ada format dipilih';$('cdesc').textContent='Centang minimal satu format di bagian atas.';$('cols').innerHTML='';$('tb').innerHTML='';$('info').textContent='';$('stats').innerHTML='<div><b>0/'+cats.length+'</b>format dipakai</div>';return}
  $('cats').innerHTML=cats.map((k,i)=>!use.has(k)?'':`<button class="ct ${k===cur0?'on':''}" data-k="${esc(k)}" style="--c:${COLR[i%COLR.length]}">${esc(k)}<b>${fc[k]}</b></button>`).join('');
  $('ctitle').textContent=cur0;$('cdesc').textContent=DESC[cur0]||'';
@@ -232,8 +219,8 @@ function draw(){SHOW=100;drawF();if(!use.has(cur0))cur0=cats.find(k=>use.has(k))
  rest()}
 function rest(){const r=catRows(cur0),cs=colsBy[cur0].filter(c=>colOn[cur0].has(c));
  $('stats').innerHTML=`<div><b>${total.toLocaleString('id')}</b>pesan di file</div><div><b>${rows.filter(r=>use.has(r.Format)).length.toLocaleString('id')}</b>laporan dipilih</div><div><b>${use.size}/${cats.length}</b>format dipakai</div><div><b>${r.length.toLocaleString('id')}</b>baris di kategori ini</div><div><b>${cs.length}</b>kolom dipilih</div>`;
- $('info').textContent=r.length>SHOW?'Pratinjau '+SHOW+' dari '+r.length+' baris (file download tetap berisi semua baris)':'';$('more').classList.toggle('hide',r.length<=SHOW);$('undel').classList.toggle('hide',!del.size);
- $('tb').innerHTML='<tr><th></th>'+cs.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr>'+r.slice(0,SHOW).map(x=>`<tr><td class="x" data-r="${x.id}">✕</td>`+cs.map(c=>'<td>'+esc(String(x[c]??'').slice(0,60))+'</td>').join('')+'</tr>').join('')}
+ $('info').textContent=r.length>100?'Pratinjau 100 dari '+r.length+' baris':'';$('undel').classList.toggle('hide',!del.size);
+ $('tb').innerHTML='<tr><th></th>'+cs.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr>'+r.slice(0,100).map(x=>`<tr><td class="x" data-r="${x.id}">✕</td>`+cs.map(c=>'<td>'+esc(String(x[c]??'').slice(0,60))+'</td>').join('')+'</tr>').join('')}
 $('cats').onclick=e=>{const b=e.target.closest('.ct');if(b){cur0=b.dataset.k;draw()}};
 $('fmts').onchange=e=>{const k=e.target.dataset.f;e.target.checked?use.add(k):use.delete(k);draw()};
 $('fAll').onclick=()=>{use=new Set(cats);draw()};$('fNone').onclick=()=>{use=new Set();draw()};
@@ -242,9 +229,8 @@ $('tb').onclick=e=>{if(e.target.dataset.r){del.add(+e.target.dataset.r);rest()}}
 $('undel').onclick=()=>{del=new Set();rest()};
 $('cAll').onclick=()=>{colOn[cur0]=new Set(colsBy[cur0]);draw()};$('cNone').onclick=()=>{colOn[cur0]=new Set();draw()};
 $('c30').onclick=()=>{colOn[cur0]=new Set(colsBy[cur0].filter(x=>META.includes(x)||(cnt[cur0][x]/fc[cur0]>=.3&&x!=='Pesan Asli'&&x!=='ID Pesan')));draw()};
-['q','d1','d2','dedup','dmode'].forEach(i=>$(i).oninput=()=>{SHOW=100;rest()});
-$('more').onclick=()=>{SHOW+=500;rest()};
-$('per').onchange=e=>{const v=e.target.value;if(v){const[a,b]=v.split('|');$('d1').value=a;$('d2').value=b}else{$('d1').value=ALL[0];$('d2').value=ALL[1]}SHOW=100;rest()};
+['q','d1','d2','dedup'].forEach(i=>$(i).oninput=rest);
+$('per').onchange=e=>{const v=e.target.value;if(v){const[a,b]=v.split('|');$('d1').value=a;$('d2').value=b}else{$('d1').value=ALL[0];$('d2').value=ALL[1]}rest()};
 const mk=(rs,cs)=>XLSX.utils.aoa_to_sheet([cs,...rs.map(x=>cs.map(c=>String(x[c]??'')))]);
 const shn=k=>k.replace(/[\\\/?*\[\]:]/g,'').slice(0,31);
 $('exp').onclick=()=>{const r=catRows(cur0),cs=colsBy[cur0].filter(c=>colOn[cur0].has(c));if(!r.length||!cs.length)return alert('Tidak ada data/kolom yang dipilih.');
@@ -270,19 +256,14 @@ const iso=(d,m,y)=>y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')
 const ST={ok:'✅ Cocok',date:'⚠ Tanggal beda',out:'📅 Di luar periode',none:'❌ Tidak ada di data',dup:'🔁 Duplikat'};
 let curT=null,saved=[],rate={};
 function parseTarik(t){const o={items:[],handle:'',p1:'',p2:''};
- const yy=y=>{y=+y;return y<100?2000+y:y};
  const pm=t.match(/periode\s+(\d{1,2})\s+([a-z]+)\s+(\d{4})\s*(?:-|–|s\/d|sd|sampai)\s*(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
  if(pm){const a=MON[pm[2].slice(0,3).toLowerCase()],b=MON[pm[5].slice(0,3).toLowerCase()];if(a&&b){o.p1=iso(pm[1],a,pm[3]);o.p2=iso(pm[4],b,pm[6])}}
  const h=t.match(/@\w+/g);if(h)o.handle=h[h.length-1];
  let cat='Tanpa kategori';
  for(const raw of t.split('\n')){const l=raw.trim();if(!l)continue;
-  if(/^tarikan|^@|^forwarded/i.test(l)||/^\d+\s*[.)]?\s*$/.test(l))continue;
-  const m=l.match(/^(?:\d{1,3}\s*[.)\-:]\s*|\d{1,3}\s+(?=[A-Za-z]))?(?=[A-Za-z0-9\-_]*\d)([A-Za-z0-9][A-Za-z0-9\-_]{5,})(.*)$/);
-  if(m){
-   const rest=m[2];let date='',d;
-   if(d=rest.match(/(\d{1,2})\s*[-\/.]\s*(\d{1,2})\s*[-\/.]\s*(\d{2,4})/))date=iso(d[1],d[2],yy(d[3]));
-   else if(d=rest.match(/(\d{1,2})\s+([A-Za-z]{3,})\.?\s+(\d{2,4})/)){const mo=MON[d[2].slice(0,3).toLowerCase()];if(mo)date=iso(d[1],mo,yy(d[3]))}
-   o.items.push({cat,code:m[1],date});continue}
+  const m=l.match(/^\d+\s*[.)]\s*([A-Za-z0-9][A-Za-z0-9\-_]*)\s*(?:\/\s*(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4}))?/);
+  if(m){o.items.push({cat,code:m[1],date:m[2]?iso(m[2],m[3],m[4]):''});continue}
+  if(/^\d+\s*[.)]?\s*$/.test(l)||/^tarikan|^@|^forwarded/i.test(l))continue;
   cat=l.replace(/[:：]+$/,'')}
  return o}
 $('chk').onclick=()=>{
@@ -294,7 +275,7 @@ $('chk').onclick=()=>{
  const days=(a,b)=>Math.round(Math.abs(new Date(a)-new Date(b))/864e5);
  const res=P.items.map(it=>{const k=it.code.toLowerCase();seen[k]=(seen[k]||0)+1;
   const hit=k.length>=8?rows.filter(x=>x._s.includes(k)):[];const row=hit[hit.length-1]||null;
-  const diff=row&&it.date?Math.min(days(row['Tanggal Kirim'].slice(0,10),it.date),row['Tanggal Evidensi']?days(row['Tanggal Evidensi'],it.date):1e9):null;let st;
+  const diff=row&&it.date?days(row['Tanggal Kirim'].slice(0,10),it.date):null;let st;
   if(seen[k]>1)st='dup';else if(!row)st='none';
   else if(p1&&p2&&it.date&&(it.date<p1||it.date>p2))st='out';else st=diff!==null&&diff>tol?'date':'ok';
   return{...it,st,diff,fmt:row?row.Format:'',hd:row?(row['Status HD']||''):'',tgl:row?row['Tanggal Kirim']:'',kirim:row?row.Pengirim:'',plg:row?(row['Nama Pelanggan']||''):''}});
