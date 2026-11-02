@@ -108,7 +108,7 @@ body::before{will-change:auto;transform:none}
 <aside class="cd side"><h3>Kolom kategori ini</h3><div class="row" style="margin:0"><button class="sm" id="c30">Terisi ≥ 30%</button><button class="sm" id="cAll">Semua</button><button class="sm" id="cNone">Kosongkan</button></div><div class="list" id="cols"></div></aside>
 <div class="cd" style="margin:0"><div><h2 id="ctitle"></h2><p class="mu" id="cdesc" style="margin:0"></p></div>
 <div class="flt"><label>Cari<input type="text" id="q" placeholder="🔎 Nama, SC, WO, ODP, teknisi…"></label><label>Dari tanggal<input type="date" id="d1"></label><label>Sampai tanggal<input type="date" id="d2"></label><label>Periode gaji (26–25)<select id="per" title="Periode gaji 26–25"></select></label></div>
-<div class="row" style="margin-top:0"><label class="mu"><input type="checkbox" id="dedup"> Hapus duplikat (ambil yang terbaru)</label><span class="mu" id="info"></span></div>
+<div class="row" style="margin-top:0"><label class="mu"><input type="checkbox" id="dedup"> Hapus duplikat (ambil yang terbaru)</label><span class="mu" id="info"></span><button class="sm hide" id="more">Tampilkan 500 lagi</button></div>
 <div class="tw"><table id="tb"></table></div><p class="mu" style="margin:8px 0 0">Klik ✕ di kiri baris untuk menghapus baris itu dari hasil.</p>
 <div class="bar"><b>3 · Download:</b><button class="p" id="exp">⬇ Excel kategori ini</button><button id="expAll">⬇ Semua kategori</button><button id="csv">CSV</button><button id="undel" class="hide">↩ Kembalikan baris dihapus</button></div></div>
 </div>
@@ -180,7 +180,7 @@ function parseAll(data){const out=[],raw=[];let tot=0;const ap={};
  return{rows:out,total:tot,raw}}
 //#/PARSE
 
-const $=s=>document.getElementById(s);let RAW=[],rows=[],total=0,cats=[],fc={},colsBy={},cnt={},colOn={},use=new Set(),del=new Set(),cur0='';
+const $=s=>document.getElementById(s);let RAW=[],rows=[],total=0,cats=[],fc={},colsBy={},cnt={},colOn={},use=new Set(),del=new Set(),cur0='',SHOW=100;
 const COLR=['#2563eb','#0d9488','#c026d3','#ea580c','#65a30d','#dc2626','#7c3aed'];
 const DESC={'Format bot /input':'Laporan dari bot dengan baris NIK, WONUM, SC, TIKOR, dan seterusnya (diawali /input).','Format bot (emoji)':'Laporan "LAPORAN INPUT EVIDENSI" berisi emoji, lengkap dengan redaman dan jenis ODP.','Format teknisi (FORMAT PELAPORAN)':'Laporan manual teknisi dengan judul FORMAT PELAPORAN.','UNSC / Cancel':'Laporan pembatalan (UNSC / Cancel) beserta alasannya.','Survey (ODP penuh / tidak ada ODP)':'Hasil survey saat ODP penuh atau belum ada ODP.','Dismantle':'Laporan pencabutan perangkat.','Berlabel lainnya':'Pesan berlabel lain yang tidak masuk format di atas.','Gangguan: laporan /LAPOR':'Laporan perbaikan gangguan dari teknisi (NO TIKET, PERBAIKAN, SN lama/baru, material, NIK). Kolom Status HD = OK kalau HD sudah membalas "ok" (dianggap closed).','Gangguan: tiket INCIDENT':'Tiket gangguan masuk dari HD (INC..., pelanggan, tipe, ringkasan keluhan, petugas).','Gangguan: LAPSUNG':'Gangguan yang diselesaikan langsung (lapsung) beserta keterangannya.','Gangguan: tiket INC ringkas':'Tiket INC versi ringkas (REG / INC), diambil nomor tiket dan nomor internetnya.'};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -211,7 +211,7 @@ function catRows(k){let r=rows.filter(x=>x.Format===k&&!del.has(x.id));
  if($('dedup').checked){const last={},K=x=>x['No WO']||x.SC||x['No Internet']||'';r.forEach((x,i)=>{const k=K(x);if(k)last[k]=i});r=r.filter((x,i)=>!K(x)||last[K(x)]===i)}
  return r}
 function drawF(){$('fmts').innerHTML=cats.map(k=>`<label class="${use.has(k)?'on':''}"><input type="checkbox" data-f="${esc(k)}" ${use.has(k)?'checked':''}>${esc(k)}<small>${fc[k]}</small></label>`).join('')}
-function draw(){drawF();if(!use.has(cur0))cur0=cats.find(k=>use.has(k))||'';
+function draw(){SHOW=100;drawF();if(!use.has(cur0))cur0=cats.find(k=>use.has(k))||'';
  if(!cur0){$('cats').innerHTML='';$('ctitle').textContent='Belum ada format dipilih';$('cdesc').textContent='Centang minimal satu format di bagian atas.';$('cols').innerHTML='';$('tb').innerHTML='';$('info').textContent='';$('stats').innerHTML='<div><b>0/'+cats.length+'</b>format dipakai</div>';return}
  $('cats').innerHTML=cats.map((k,i)=>!use.has(k)?'':`<button class="ct ${k===cur0?'on':''}" data-k="${esc(k)}" style="--c:${COLR[i%COLR.length]}">${esc(k)}<b>${fc[k]}</b></button>`).join('');
  $('ctitle').textContent=cur0;$('cdesc').textContent=DESC[cur0]||'';
@@ -219,8 +219,8 @@ function draw(){drawF();if(!use.has(cur0))cur0=cats.find(k=>use.has(k))||'';
  rest()}
 function rest(){const r=catRows(cur0),cs=colsBy[cur0].filter(c=>colOn[cur0].has(c));
  $('stats').innerHTML=`<div><b>${total.toLocaleString('id')}</b>pesan di file</div><div><b>${rows.filter(r=>use.has(r.Format)).length.toLocaleString('id')}</b>laporan dipilih</div><div><b>${use.size}/${cats.length}</b>format dipakai</div><div><b>${r.length.toLocaleString('id')}</b>baris di kategori ini</div><div><b>${cs.length}</b>kolom dipilih</div>`;
- $('info').textContent=r.length>100?'Pratinjau 100 dari '+r.length+' baris':'';$('undel').classList.toggle('hide',!del.size);
- $('tb').innerHTML='<tr><th></th>'+cs.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr>'+r.slice(0,100).map(x=>`<tr><td class="x" data-r="${x.id}">✕</td>`+cs.map(c=>'<td>'+esc(String(x[c]??'').slice(0,60))+'</td>').join('')+'</tr>').join('')}
+ $('info').textContent=r.length>SHOW?'Pratinjau '+SHOW+' dari '+r.length+' baris (file download tetap berisi semua baris)':'';$('more').classList.toggle('hide',r.length<=SHOW);$('undel').classList.toggle('hide',!del.size);
+ $('tb').innerHTML='<tr><th></th>'+cs.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr>'+r.slice(0,SHOW).map(x=>`<tr><td class="x" data-r="${x.id}">✕</td>`+cs.map(c=>'<td>'+esc(String(x[c]??'').slice(0,60))+'</td>').join('')+'</tr>').join('')}
 $('cats').onclick=e=>{const b=e.target.closest('.ct');if(b){cur0=b.dataset.k;draw()}};
 $('fmts').onchange=e=>{const k=e.target.dataset.f;e.target.checked?use.add(k):use.delete(k);draw()};
 $('fAll').onclick=()=>{use=new Set(cats);draw()};$('fNone').onclick=()=>{use=new Set();draw()};
@@ -229,8 +229,9 @@ $('tb').onclick=e=>{if(e.target.dataset.r){del.add(+e.target.dataset.r);rest()}}
 $('undel').onclick=()=>{del=new Set();rest()};
 $('cAll').onclick=()=>{colOn[cur0]=new Set(colsBy[cur0]);draw()};$('cNone').onclick=()=>{colOn[cur0]=new Set();draw()};
 $('c30').onclick=()=>{colOn[cur0]=new Set(colsBy[cur0].filter(x=>META.includes(x)||(cnt[cur0][x]/fc[cur0]>=.3&&x!=='Pesan Asli'&&x!=='ID Pesan')));draw()};
-['q','d1','d2','dedup'].forEach(i=>$(i).oninput=rest);
-$('per').onchange=e=>{const v=e.target.value;if(v){const[a,b]=v.split('|');$('d1').value=a;$('d2').value=b}else{$('d1').value=ALL[0];$('d2').value=ALL[1]}rest()};
+['q','d1','d2','dedup'].forEach(i=>$(i).oninput=()=>{SHOW=100;rest()});
+$('more').onclick=()=>{SHOW+=500;rest()};
+$('per').onchange=e=>{const v=e.target.value;if(v){const[a,b]=v.split('|');$('d1').value=a;$('d2').value=b}else{$('d1').value=ALL[0];$('d2').value=ALL[1]}SHOW=100;rest()};
 const mk=(rs,cs)=>XLSX.utils.aoa_to_sheet([cs,...rs.map(x=>cs.map(c=>String(x[c]??'')))]);
 const shn=k=>k.replace(/[\\\/?*\[\]:]/g,'').slice(0,31);
 $('exp').onclick=()=>{const r=catRows(cur0),cs=colsBy[cur0].filter(c=>colOn[cur0].has(c));if(!r.length||!cs.length)return alert('Tidak ada data/kolom yang dipilih.');
@@ -256,14 +257,19 @@ const iso=(d,m,y)=>y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')
 const ST={ok:'✅ Cocok',date:'⚠ Tanggal beda',out:'📅 Di luar periode',none:'❌ Tidak ada di data',dup:'🔁 Duplikat'};
 let curT=null,saved=[],rate={};
 function parseTarik(t){const o={items:[],handle:'',p1:'',p2:''};
+ const yy=y=>{y=+y;return y<100?2000+y:y};
  const pm=t.match(/periode\s+(\d{1,2})\s+([a-z]+)\s+(\d{4})\s*(?:-|–|s\/d|sd|sampai)\s*(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
  if(pm){const a=MON[pm[2].slice(0,3).toLowerCase()],b=MON[pm[5].slice(0,3).toLowerCase()];if(a&&b){o.p1=iso(pm[1],a,pm[3]);o.p2=iso(pm[4],b,pm[6])}}
  const h=t.match(/@\w+/g);if(h)o.handle=h[h.length-1];
  let cat='Tanpa kategori';
  for(const raw of t.split('\n')){const l=raw.trim();if(!l)continue;
-  const m=l.match(/^\d+\s*[.)]\s*([A-Za-z0-9][A-Za-z0-9\-_]*)\s*(?:\/\s*(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4}))?/);
-  if(m){o.items.push({cat,code:m[1],date:m[2]?iso(m[2],m[3],m[4]):''});continue}
-  if(/^\d+\s*[.)]?\s*$/.test(l)||/^tarikan|^@|^forwarded/i.test(l))continue;
+  if(/^tarikan|^@|^forwarded/i.test(l)||/^\d+\s*[.)]?\s*$/.test(l))continue;
+  const m=l.match(/^(?:\d{1,3}\s*[.)\-:]\s*|\d{1,3}\s+(?=[A-Za-z]))?(?=[A-Za-z0-9\-_]*\d)([A-Za-z0-9][A-Za-z0-9\-_]{5,})(.*)$/);
+  if(m){
+   const rest=m[2];let date='',d;
+   if(d=rest.match(/(\d{1,2})\s*[-\/.]\s*(\d{1,2})\s*[-\/.]\s*(\d{2,4})/))date=iso(d[1],d[2],yy(d[3]));
+   else if(d=rest.match(/(\d{1,2})\s+([A-Za-z]{3,})\.?\s+(\d{2,4})/)){const mo=MON[d[2].slice(0,3).toLowerCase()];if(mo)date=iso(d[1],mo,yy(d[3]))}
+   o.items.push({cat,code:m[1],date});continue}
   cat=l.replace(/[:：]+$/,'')}
  return o}
 $('chk').onclick=()=>{
