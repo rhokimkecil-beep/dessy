@@ -347,7 +347,7 @@ function check(list){const wo={},sc={};
 function line(x){const r=x.r,o=[];
  SPEC.forEach(([h,k],i)=>{let v='';
   if(h==='No')v=x.n;
-  else if(h==='Tanggal')v=idDate(g(r,'Tanggal Kirim'));
+  else if(h==='Tanggal'){const t=g(r,'Tanggal Kirim'),m=t.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);v=m?new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5],+m[6])):idDate(t)}
   else if(h==='Port')v=lab(r,'PORT ODP')?lab(r,'PORT'):'';
   else if(h==='Data Lain (label tak dikenal)')v=Object.keys(r).filter(c=>!SKIP.has(c)&&!PLACED.has(c)&&g(r,c)).map(c=>c+': '+g(r,c)).join('; ');
   else if(h==='ID Pesan Telegram')v=g(r,'ID Pesan');
@@ -368,7 +368,7 @@ $('std').onclick=async()=>{
   const B=check(list),wb=new ExcelJS.Workbook(),ws=wb.addWorksheet('Data Laporan',{views:[{state:'frozen',ySplit:1}]});
   const h=ws.addRow(SPEC.map(x=>x[0]));
   h.eachCell(c=>{c.font={bold:true,color:{argb:'FFFFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF1F4E78'}};c.alignment={horizontal:'center',vertical:'middle',wrapText:true};c.border=bd});
-  B.forEach(x=>{const row=ws.addRow(line(x));row.eachCell({includeEmpty:true},c=>{c.font={name:'Calibri',size:11};c.alignment={vertical:'top',wrapText:true};c.border=bd})});
+  B.forEach(x=>{const row=ws.addRow(line(x));row.getCell(2).numFmt='dd-mm-yyyy hh:mm:ss';row.eachCell({includeEmpty:true},c=>{c.font={name:'Calibri',size:11};c.alignment={vertical:'top',wrapText:true};c.border=bd})});
   W.forEach((w,i)=>ws.getColumn(i+1).width=w);
   ws.autoFilter={from:{row:1,column:1},to:{row:1,column:SPEC.length}};
   const bad=B.filter(x=>x.iss.length),rs=wb.addWorksheet('Ringkasan');
@@ -396,7 +396,8 @@ $('ds').onclick=async()=>{
  try{
   const wb=new ExcelJS.Workbook(),ws=wb.addWorksheet('Data'),nh=$('dsNoH').checked;
   if(!nh){const h=ws.addRow(C.map(x=>x[0]));h.eachCell(c=>{c.font={bold:true,color:{argb:'FFFFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF1F4E78'}};c.alignment={horizontal:'center',vertical:'middle',wrapText:true}});ws.views=[{state:'frozen',ySplit:1}]}
-  list.forEach(r=>ws.addRow(C.map(([h,k])=>h==='Tanggal'?idDate(g(r,'Tanggal Kirim')):g(r,k))));
+  window.xd=t=>{const m=String(t).match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);return m?new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5],+m[6])):t};
+  list.forEach(r=>{const rw=ws.addRow(C.map(([h,k])=>h==='Tanggal'?xd(g(r,'Tanggal Kirim')):g(r,k)));rw.getCell(1).numFmt='dd-mm-yyyy hh:mm:ss'});
   W.forEach((w,i)=>ws.getColumn(i+1).width=w);
   const buf=await wb.xlsx.writeBuffer(),a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));a.download='Data_Laporan_Dessy.xlsx';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
@@ -499,4 +500,56 @@ $('c4Xls').onclick=async()=>{
   a.download='Cancel_'+today()+'.xlsx';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
  }catch(e){alert('Gagal membuat Excel: '+e.message)}};
 })();
-</script></main><div id="wm">By <b>Devvvvv</b></div></body></html>
+</script>
+<!-- ===== PATCH TANGGAL ===== -->
+<script>
+(function(){
+const MB={jan:1,januari:1,feb:2,februari:2,mar:3,maret:3,apr:4,april:4,mei:5,jun:6,juni:6,jul:7,juli:7,agu:8,ags:8,agustus:8,sep:9,september:9,okt:10,oktober:10,nov:11,november:11,des:12,desember:12};
+const p2=n=>String(n).padStart(2,'0');
+// Tanggal asli di isi laporan -> 'YYYY-MM-DD' ('' kalau tidak terbaca)
+function isiTgl(r){
+ const v=String(r['Tanggal Laporan']||'').trim().toLowerCase();if(!v)return'';
+ let m=v.match(/(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/);
+ if(m&&+m[2]<=12)return m[3]+'-'+p2(m[2])+'-'+p2(m[1]);
+ m=v.match(/(\d{1,2})[\s\-\/.]*([a-z]{3,9})[\s\-\/.]*(\d{4})/);
+ if(m&&MB[m[2]])return m[3]+'-'+p2(MB[m[2]])+'-'+p2(m[1]);
+ return''}
+const kirim=r=>r['Tanggal Kirim'].slice(0,10);
+const eff=r=>($('basis').value==='isi'&&isiTgl(r))||kirim(r);
+
+// pilihan dasar tanggal
+$('d1').closest('.flt').insertAdjacentHTML('beforeend',
+ '<label>Saring tanggal berdasarkan<select id="basis"><option value="isi">Tanggal di isi laporan (kalau ada)</option><option value="kirim">Waktu kirim di Telegram</option></select></label>');
+$('q').closest('.flt').insertAdjacentHTML('afterend','<p class="mu" id="cov" style="margin:0 0 8px"></p>');
+
+// filter baru: sama seperti catRows lama, tapi tanggal pakai eff()
+catRows=function(k){
+ let r=rows.filter(x=>x.Format===k&&!del.has(x.id));
+ const q=$('q').value.trim().toLowerCase(),a=$('d1').value,b=$('d2').value;
+ if(q)r=r.filter(x=>x._s.includes(q));
+ if(a)r=r.filter(x=>eff(x)>=a);
+ if(b)r=r.filter(x=>eff(x)<=b);
+ if($('dedup').checked){const last={},K=x=>x['No WO']||x.SC||x['No Internet']||'';
+  r.forEach((x,i)=>{const z=K(x);if(z)last[z]=i});r=r.filter((x,i)=>!K(x)||last[K(x)]===i)}
+ return r};
+
+// info cakupan data + peringatan tanggal
+function cov(){
+ const el=$('cov');if(!rows.length){el.innerHTML='';return}
+ const ts=rows.map(r=>r['Tanggal Kirim']).sort(),last=ts[ts.length-1];
+ let h='Isi file JSON: <b>'+ts[0].slice(0,10)+'</b> s/d <b>'+last.replace('T',' ').slice(0,16)+'</b>.';
+ const b=$('d2').value;
+ if(b&&b>last.slice(0,10))h+=' <span style="color:var(--wr);font-weight:700">⚠ Sampai-tanggal kamu melewati data terakhir di file. Data setelah itu belum ada, export ulang chat dari Telegram supaya lengkap.</span>';
+ if($('d1').validity.badInput||$('d2').validity.badInput)h+=' <span style="color:var(--rd);font-weight:700">⚠ Ada tanggal tidak valid (misal 31 November, padahal November cuma 30 hari). Pakai tanggal 30.</span>';
+ const skip=rows.filter(r=>use.has(r.Format)&&$('basis').value==='isi'&&!isiTgl(r)).length;
+ if(skip)h+=' <span class="mu">'+skip+' laporan tidak punya tanggal di isi pesan, jadi dipakai waktu kirimnya.</span>';
+ el.innerHTML=h}
+
+const _rest=rest;
+rest=function(){_rest();cov()};
+['q','d1','d2','dedup','basis'].forEach(i=>$(i).oninput=rest);
+$('basis').onchange=rest;
+$('per').onchange=e=>{const v=e.target.value;if(v){const[a,b]=v.split('|');$('d1').value=a;$('d2').value=b}else{$('d1').value=ALL[0];$('d2').value=ALL[1]}rest()};
+})();
+</script>
+</main><div id="wm">By <b>Devvvvv</b></div></body></html>
