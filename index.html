@@ -256,14 +256,19 @@ const iso=(d,m,y)=>y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')
 const ST={ok:'✅ Cocok',date:'⚠ Tanggal beda',out:'📅 Di luar periode',none:'❌ Tidak ada di data',dup:'🔁 Duplikat'};
 let curT=null,saved=[],rate={};
 function parseTarik(t){const o={items:[],handle:'',p1:'',p2:''};
+ const yy=y=>{y=+y;return y<100?2000+y:y};
  const pm=t.match(/periode\s+(\d{1,2})\s+([a-z]+)\s+(\d{4})\s*(?:-|–|s\/d|sd|sampai)\s*(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
  if(pm){const a=MON[pm[2].slice(0,3).toLowerCase()],b=MON[pm[5].slice(0,3).toLowerCase()];if(a&&b){o.p1=iso(pm[1],a,pm[3]);o.p2=iso(pm[4],b,pm[6])}}
  const h=t.match(/@\w+/g);if(h)o.handle=h[h.length-1];
  let cat='Tanpa kategori';
  for(const raw of t.split('\n')){const l=raw.trim();if(!l)continue;
-  const m=l.match(/^\d+\s*[.)]\s*([A-Za-z0-9][A-Za-z0-9\-_]*)\s*(?:\/\s*(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4}))?/);
-  if(m){o.items.push({cat,code:m[1],date:m[2]?iso(m[2],m[3],m[4]):''});continue}
-  if(/^\d+\s*[.)]?\s*$/.test(l)||/^tarikan|^@|^forwarded/i.test(l))continue;
+  if(/^tarikan|^@|^forwarded/i.test(l)||/^\d+\s*[.)]?\s*$/.test(l))continue;
+  const m=l.match(/^(?:\d{1,3}\s*[.)\-:]\s*|\d{1,3}\s+(?=[A-Za-z]))?(?=[A-Za-z0-9\-_]*\d)([A-Za-z0-9][A-Za-z0-9\-_]{5,})(.*)$/);
+  if(m){
+   const rest=m[2];let date='',d;
+   if(d=rest.match(/(\d{1,2})\s*[-\/.]\s*(\d{1,2})\s*[-\/.]\s*(\d{2,4})/))date=iso(d[1],d[2],yy(d[3]));
+   else if(d=rest.match(/(\d{1,2})\s+([A-Za-z]{3,})\.?\s+(\d{2,4})/)){const mo=MON[d[2].slice(0,3).toLowerCase()];if(mo)date=iso(d[1],mo,yy(d[3]))}
+   o.items.push({cat,code:m[1],date});continue}
   cat=l.replace(/[:：]+$/,'')}
  return o}
 $('chk').onclick=()=>{
