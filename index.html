@@ -541,8 +541,8 @@ function cov(){
  const b=$('d2').value;
  if(b&&b>last.slice(0,10))h+=' <span style="color:var(--wr);font-weight:700">⚠ Sampai-tanggal kamu melewati data terakhir di file. Data setelah itu belum ada, export ulang chat dari Telegram supaya lengkap.</span>';
  if($('d1').validity.badInput||$('d2').validity.badInput)h+=' <span style="color:var(--rd);font-weight:700">⚠ Ada tanggal tidak valid (misal 31 November, padahal November cuma 30 hari). Pakai tanggal 30.</span>';
- const skip=rows.filter(r=>use.has(r.Format)&&$('basis').value==='isi'&&!isiTgl(r)).length;
- if(skip)h+=' <span class="mu">'+skip+' laporan tidak punya tanggal di isi pesan, jadi dipakai waktu kirimnya.</span>';
+ const skip=rows.filter(r=>r.Format===cur0&&$('basis').value==='isi'&&!isiTgl(r)).length;
+ if(skip)h+=' <span class="mu">Di kategori ini '+skip+' laporan tidak punya tanggal di isi pesan, jadi dipakai waktu kirimnya.</span>';
  el.innerHTML=h}
 
 const _rest=rest;
